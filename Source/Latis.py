@@ -1,5 +1,7 @@
 import io           # Nécessaire car le fichier est encodé en 'utf-16-le'
 import xmltodict    # Pour lire facillement le fichier xml
+import struct
+import binascii
 
 def netoyage(texte :str):
     # Le fihier ne respecte pas totalement la norme xml
@@ -37,6 +39,18 @@ def extract(path: str) :
 
         # Récupération des chaines exadécimales
         for i in range(nb_courbes) :
-            table_string.append([ doc["BLOC-COURBES"]["LESCOURBES"]["C"]["C" + str(i)]["DATAX"]["DonneesX"]["DONNEES"] ])
+            table_string.append([])
+            if doc["BLOC-COURBES"]["LESCOURBES"]["C"]["C" + str(i)]["DATAX"]["DonneesX"]["DONNEES"] :
+                table_string[i].append(doc["BLOC-COURBES"]["LESCOURBES"]["C"]["C" + str(i)]["DATAX"]["DonneesX"]["DONNEES"])
             table_string[i].append( doc["BLOC-COURBES"]["LESCOURBES"]["C"]["C" + str(i)]["DATAY"]["DonneesY"]["DONNEES"] )
 
+        table_float = []
+
+        for i in range(len(table_string)):
+            table_float.append([])
+            for j in range(len(table_string[i])):
+                table_float[i].append([])
+                for k in range(int(len(table_string[i][j])/16)):
+                    table_float[i][j].append(struct.unpack('d', binascii.unhexlify(table_string[i][j][k*16:(k+1)*16])))
+
+    return table_float
