@@ -21,7 +21,11 @@ def convertion(table):
     pass
 
 
-def test(path: str) :
+def extract(path: str) :
+    # En théorie retourne une liste de listes de liste de valeurs:
+    # Chaque courbe latis pro contient deux listes de valeurs, une pour x et une pour y
+    # Il y a potentiellement plusieurs courbes dans le fichier
+    
     with io.open(path, 'r', encoding='utf-16-le') as file:    # Chargement du fichier
         content = netoyage(file.read())
 
